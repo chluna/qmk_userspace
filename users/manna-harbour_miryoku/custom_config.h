@@ -102,7 +102,7 @@ U_NP,              U_NP,              U_NA,              U_NA,              U_NA
 
 // Configure settings for Dalius-style one shot keys
 #define FLOW_COUNT 16
-#define FLOW_ONESHOT_WAIT_TERM 1000
+#define FLOW_ONESHOT_WAIT_TERM 500
 #define FLOW_ONESHOT_TERM 2000
 
 // Configure settings for custom shift keys
