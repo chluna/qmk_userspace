@@ -239,12 +239,12 @@ void matrix_scan_user(void) {
 
 const uint16_t PROGMEM app_launch_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_G, COMBO_END};
 const uint16_t PROGMEM app_launch_r_combo[] = {LT(U_SYM, KC_ENT), KC_M, COMBO_END};
-const uint16_t PROGMEM dyn_macro_ply_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_S, KC_T, COMBO_END};
-const uint16_t PROGMEM dyn_macro_rec_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_R, KC_S, COMBO_END};
-const uint16_t PROGMEM dyn_macro_stp_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_A, KC_R, COMBO_END};
-const uint16_t PROGMEM dyn_macro_ply_r_combo[] = {LT(U_SYM, KC_ENT), KC_E, KC_N, COMBO_END};
-const uint16_t PROGMEM dyn_macro_rec_r_combo[] = {LT(U_SYM, KC_ENT), KC_I, KC_E, COMBO_END};
-const uint16_t PROGMEM dyn_macro_stp_r_combo[] = {LT(U_SYM, KC_ENT), KC_O, KC_I, COMBO_END};
+const uint16_t PROGMEM dyn_macro_ply_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_F, KC_P, COMBO_END};
+const uint16_t PROGMEM dyn_macro_rec_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_W, KC_F, COMBO_END};
+const uint16_t PROGMEM dyn_macro_stp_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_Q, KC_W, COMBO_END};
+const uint16_t PROGMEM dyn_macro_ply_r_combo[] = {LT(U_SYM, KC_ENT), KC_U, KC_L, COMBO_END};
+const uint16_t PROGMEM dyn_macro_rec_r_combo[] = {LT(U_SYM, KC_ENT), KC_Y, KC_U, COMBO_END};
+const uint16_t PROGMEM dyn_macro_stp_r_combo[] = {LT(U_SYM, KC_ENT), KC_QUOT, KC_Y, COMBO_END};
 const uint16_t PROGMEM und_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_Z, COMBO_END};
 const uint16_t PROGMEM rdo_l_combo[] = {LT(U_MOUSE, KC_TAB), KC_X, COMBO_END};
 const uint16_t PROGMEM cut_l_combo[] = {KC_Z, KC_X, COMBO_END};
