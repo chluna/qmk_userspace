@@ -179,8 +179,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TD(U_TD_U_NAV):
         case TD(U_TD_BOOT):
             return 300;
+#if defined(RGB_MATRIX_ENABLE) || defined(RGBLIGHT_ENABLE)
         case TD(TD_RGB_MOD):
             return 500;
+#endif
         default:
             return g_tapping_term;
     }
