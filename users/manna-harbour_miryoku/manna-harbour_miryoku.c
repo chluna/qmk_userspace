@@ -89,10 +89,15 @@ tap_dance_action_t tap_dance_actions[] = {
 };
 
 
-// Custom macros
+// Custom keycodes
 
 enum custom_keycodes {
     O_APP = SAFE_RANGE,
+    O_CUT,
+    O_CPY,
+    O_PST,
+    O_UND,
+    O_RDO,
     XC_CUSTOM,
     XC_KC_UNDS,
     XC_KC_MINS,
@@ -100,27 +105,10 @@ enum custom_keycodes {
     XC_KC_BSLS,
 };
 
+static uint16_t o_app, o_cut, o_cpy, o_pst, o_und, o_rdo;
+
 
 // Custom functions
-
-void invoke_app_launcher(void) {
-    os_variant_t os = detected_host_os();
-    switch (os) {
-        case OS_LINUX:
-            tap_code16(LGUI(KC_SPC));
-            break;
-        case OS_WINDOWS:
-            tap_code16(LALT(KC_SPC));
-            break;
-        case OS_MACOS:
-        case OS_IOS:
-            tap_code16(LCMD(KC_SPC));
-            break;
-        default:
-            // send nothing
-            break;
-    }
-}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!update_flow(keycode, record)) {
@@ -138,7 +126,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
             case O_APP:
-                invoke_app_launcher();
+                tap_code16(o_app);
+                break;
+            case O_CUT:
+                register_code16(o_cut);
+                break;
+            case O_CPY:
+                register_code16(o_cpy);
+                break;
+            case O_PST:
+                register_code16(o_pst);
+                break;
+            case O_UND:
+                register_code16(o_und);
+                break;
+            case O_RDO:
+                register_code16(o_rdo);
                 break;
             case XC_CUSTOM:
                 enable_xcase();
@@ -157,9 +160,61 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 break;
         }
     }
+    else if (!record->event.pressed) {
+        switch (keycode) {
+            case O_CUT:
+                unregister_code16(o_cut);
+                break;
+            case O_CPY:
+                unregister_code16(o_cpy);
+                break;
+            case O_PST:
+                unregister_code16(o_pst);
+                break;
+            case O_UND:
+                unregister_code16(o_und);
+                break;
+            case O_RDO:
+                unregister_code16(o_rdo);
+                break;
+        }
+    }
 
     return true;
 };
+
+bool process_detected_host_os_user(os_variant_t detected_os) {
+    switch (detected_os) {
+        case OS_WINDOWS:
+            o_app = A(KC_SPC);
+            o_rdo = C(KC_Y);
+            o_pst = C(KC_V);
+            o_cpy = C(KC_C);
+            o_cut = C(KC_X);
+            o_und = C(KC_Z);
+            break;
+        case OS_MACOS:
+        case OS_IOS:
+            o_app = G(KC_SPC);
+            o_rdo = LSG(KC_Z);
+            o_pst = G(KC_V);
+            o_cpy = G(KC_C);
+            o_cut = G(KC_X);
+            o_und = G(KC_Z);
+            break;
+        case OS_LINUX:
+        default:
+            o_app = G(KC_SPC);
+            o_rdo = C(KC_Y);
+            o_pst = C(KC_V);
+            o_cpy = C(KC_C);
+            o_cut = C(KC_X);
+            o_und = C(KC_Z);
+            break;
+    }
+
+    return true;
+}
 
 bool use_default_xcase_separator(uint16_t keycode, const keyrecord_t *record) {
     switch (keycode) {
@@ -267,16 +322,16 @@ combo_t key_combos[] = {
     COMBO(dyn_macro_ply_r_combo, DM_PLY2),
     COMBO(dyn_macro_rec_r_combo, DM_REC2),
     COMBO(dyn_macro_stp_r_combo, DM_RSTP),
-    COMBO(und_l_combo,           U_UND),
-    COMBO(rdo_l_combo,           U_RDO),
-    COMBO(cut_l_combo,           U_CUT),
-    COMBO(cpy_l_combo,           U_CPY),
-    COMBO(pst_l_combo,           U_PST),
-    COMBO(und_r_combo,           U_UND),
-    COMBO(rdo_r_combo,           U_RDO),
-    COMBO(cut_r_combo,           U_CUT),
-    COMBO(cpy_r_combo,           U_CPY),
-    COMBO(pst_r_combo,           U_PST),
+    COMBO(und_l_combo,           O_UND),
+    COMBO(rdo_l_combo,           O_RDO),
+    COMBO(cut_l_combo,           O_CUT),
+    COMBO(cpy_l_combo,           O_CPY),
+    COMBO(pst_l_combo,           O_PST),
+    COMBO(und_r_combo,           O_UND),
+    COMBO(rdo_r_combo,           O_RDO),
+    COMBO(cut_r_combo,           O_CUT),
+    COMBO(cpy_r_combo,           O_CPY),
+    COMBO(pst_r_combo,           O_PST),
 };
 
 uint8_t combo_ref_from_layer(uint8_t layer) {
