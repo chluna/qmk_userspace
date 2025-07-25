@@ -43,36 +43,36 @@ MIRYOKU_LAYER_LIST
 void td_rgb_modes(tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1:
-#           if defined (RGB_MATRIX_ENABLE)
-                rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
-#           endif
-#           if defined (RGBLIGHT_ENABLE)
-                rgblight_mode(RGBLIGHT_MODE_STATIC_LIGHT);
-#           endif
+#if defined (RGB_MATRIX_ENABLE)
+            rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
+#endif
+#if defined (RGBLIGHT_ENABLE)
+            rgblight_mode(RGBLIGHT_MODE_STATIC_LIGHT);
+#endif
             break;
         case 2:
-#           if defined (RGB_MATRIX_ENABLE)
-                rgb_matrix_mode(RGB_MATRIX_BREATHING);
-#           endif
-#           if defined (RGBLIGHT_ENABLE)
-                rgblight_mode(RGBLIGHT_MODE_BREATHING);
-#           endif
+#if defined (RGB_MATRIX_ENABLE)
+            rgb_matrix_mode(RGB_MATRIX_BREATHING);
+#endif
+#if defined (RGBLIGHT_ENABLE)
+            rgblight_mode(RGBLIGHT_MODE_BREATHING);
+#endif
             break;
         case 3:
-#           if defined (RGB_MATRIX_ENABLE)
-                rgb_matrix_mode(RGB_MATRIX_CYCLE_LEFT_RIGHT);
-#           endif
-#           if defined (RGBLIGHT_ENABLE)
-                rgblight_mode(RGBLIGHT_MODE_RAINBOW_MOOD);
-#           endif
+#if defined (RGB_MATRIX_ENABLE)
+            rgb_matrix_mode(RGB_MATRIX_CYCLE_LEFT_RIGHT);
+#endif
+#if defined (RGBLIGHT_ENABLE)
+            rgblight_mode(RGBLIGHT_MODE_RAINBOW_MOOD);
+#endif
             break;
         case 4:
-#           if defined (RGB_MATRIX_ENABLE)
-                rgb_matrix_mode(RGB_MATRIX_CYCLE_PINWHEEL);
-#           endif
-#           if defined (RGBLIGHT_ENABLE)
-                rgblight_mode(RGBLIGHT_MODE_RAINBOW_SWIRL);
-#           endif
+#if defined (RGB_MATRIX_ENABLE)
+            rgb_matrix_mode(RGB_MATRIX_CYCLE_PINWHEEL);
+#endif
+#if defined (RGBLIGHT_ENABLE)
+            rgblight_mode(RGBLIGHT_MODE_RAINBOW_SWIRL);
+#endif
             break;
     }
 }
@@ -114,15 +114,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!update_flow(keycode, record)) {
         return false;
     }
-
     if (!process_custom_shift_keys(keycode, record)) {
         return false;
     }
-
     if (!process_case_modes(keycode, record)) {
         return false;
     }
-
     if (record->event.pressed) {
         switch (keycode) {
             case O_APP:
@@ -179,7 +176,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 break;
         }
     }
-
     return true;
 };
 
@@ -212,7 +208,6 @@ bool process_detected_host_os_user(os_variant_t detected_os) {
             o_und = C(KC_Z);
             break;
     }
-
     return true;
 }
 
@@ -345,24 +340,26 @@ uint8_t combo_ref_from_layer(uint8_t layer) {
 // OLED
 
 #if defined (OLED_ENABLE)
-oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
+#include "features/spaceship.c"
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
         return OLED_ROTATION_270;
     } else {
-        return OLED_ROTATION_180;
+        return OLED_ROTATION_0;
     }
     return rotation;
 }
 
-static void render_logo(void) {
-    static const char PROGMEM raw_logo[] = {
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,240,240,128,240,240,128,240,240,128,240,240,128,240,240,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,128,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,182,182,182,255,255,255,  3,  3,255,255,255,  3,  3,255,255,255,  3,  3,255,255,255,182,182,182,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,192,224,240,112, 48, 48, 48,112,224,224,128,  0,  0,255,255,255, 96,112, 48, 48,112,240,240,224,  0,  0,  0,  0,255,255,255,  0,  0,  0,240,240,  0,  0,  0,  0,  0,  0,240,240,240,  0,  0,  0,240,240,240, 96, 48, 48, 48,112,240,224,192,  0,  0,  0, 64,224,240,112, 48, 48, 48,112,240,224,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,109,109,109,255,255,255,254,254,248,241,243,192,192,243,241,248,252,254,255,255,255,109,109,109,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 63,127,255,224,192,128,128,128,192,224,224, 32,  0,  0,255,255,255,  0,  0,  0,  0,  0,  0,255,255,254,  0,  0,  0,255,255,255,  0,  0,  0,127,255,240,192,128,128,192,224,255,255,255,  0,  0,  0,255,255,255,  0,  0,  0,  0,  0,255,255,255,  0,  0,  0,248,252,220,142,142,134,134,198,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, 15, 15,  1, 15, 15,  1, 15, 15,  1, 15, 15,  1, 15, 15,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    };
-    oled_write_raw_P(raw_logo, sizeof(raw_logo));
-}
+// static void render_logo(void) {
+//     static const char PROGMEM raw_logo[] = {
+//         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,240,240,128,240,240,128,240,240,128,240,240,128,240,240,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,128,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+//         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,182,182,182,255,255,255,  3,  3,255,255,255,  3,  3,255,255,255,  3,  3,255,255,255,182,182,182,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,128,192,224,240,112, 48, 48, 48,112,224,224,128,  0,  0,255,255,255, 96,112, 48, 48,112,240,240,224,  0,  0,  0,  0,255,255,255,  0,  0,  0,240,240,  0,  0,  0,  0,  0,  0,240,240,240,  0,  0,  0,240,240,240, 96, 48, 48, 48,112,240,224,192,  0,  0,  0, 64,224,240,112, 48, 48, 48,112,240,224,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
+//         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,109,109,109,255,255,255,254,254,248,241,243,192,192,243,241,248,252,254,255,255,255,109,109,109,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 63,127,255,224,192,128,128,128,192,224,224, 32,  0,  0,255,255,255,  0,  0,  0,  0,  0,  0,255,255,254,  0,  0,  0,255,255,255,  0,  0,  0,127,255,240,192,128,128,192,224,255,255,255,  0,  0,  0,255,255,255,  0,  0,  0,  0,  0,255,255,255,  0,  0,  0,248,252,220,142,142,134,134,198,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
+//         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, 15, 15,  1, 15, 15,  1, 15, 15,  1, 15, 15,  1, 15, 15,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  0,  1,  1,  1,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1,  0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+//     };
+//     oled_write_raw_P(raw_logo, sizeof(raw_logo));
+// }
 
 static void render_linux_logo(void) {
     static const char PROGMEM raw_logo[] = {
@@ -698,15 +695,13 @@ void render_kb_state(void) {
     }
 }
 
-bool oled_task_kb(void) {
-    if (!oled_task_user()) {
-        return false;
-    }
+bool oled_task_user(void) {
     if (is_keyboard_master()) {
         render_kb_state();
     } else {
-        render_logo();
-        oled_scroll_left();
+        if (is_oled_on()) {
+            render_space();
+        }
     }
     return false;
 }
