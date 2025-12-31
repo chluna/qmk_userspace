@@ -278,14 +278,6 @@ const uint16_t flow_config[FLOW_COUNT][2] = {
     {LT(U_NUM,KC_BSPC),  KC_LCTL},
     {LT(U_NUM,KC_BSPC),  KC_LALT},
     {LT(U_NUM,KC_BSPC),  KC_LGUI},
-    {LT(U_MOUSE,KC_TAB), KC_LSFT},
-    {LT(U_MOUSE,KC_TAB), KC_LCTL},
-    {LT(U_MOUSE,KC_TAB), KC_LALT},
-    {LT(U_MOUSE,KC_TAB), KC_LGUI},
-    {LT(U_SYM,KC_ENT),   KC_LSFT},
-    {LT(U_SYM,KC_ENT),   KC_LCTL},
-    {LT(U_SYM,KC_ENT),   KC_LALT},
-    {LT(U_SYM,KC_ENT),   KC_LGUI},
 };
 
 void matrix_scan_user(void) {
