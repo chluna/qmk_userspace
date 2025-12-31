@@ -180,8 +180,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 
 bool process_detected_host_os_user(os_variant_t detected_os) {
+    bool swap_ctl_gui;
     switch (detected_os) {
         case OS_WINDOWS:
+            swap_ctl_gui = false;
             o_app = A(KC_SPC);
             o_rdo = C(KC_Y);
             o_pst = C(KC_V);
@@ -191,6 +193,7 @@ bool process_detected_host_os_user(os_variant_t detected_os) {
             break;
         case OS_MACOS:
         case OS_IOS:
+            swap_ctl_gui = true;
             o_app = G(KC_SPC);
             o_rdo = LSG(KC_Z);
             o_pst = G(KC_V);
@@ -200,6 +203,7 @@ bool process_detected_host_os_user(os_variant_t detected_os) {
             break;
         case OS_LINUX:
         default:
+            swap_ctl_gui = false;
             o_app = G(KC_SPC);
             o_rdo = C(KC_Y);
             o_pst = C(KC_V);
@@ -208,6 +212,8 @@ bool process_detected_host_os_user(os_variant_t detected_os) {
             o_und = C(KC_Z);
             break;
     }
+    keymap_config.swap_lctl_lgui = swap_ctl_gui;
+    keymap_config.swap_rctl_rgui = swap_ctl_gui;
     return true;
 }
 

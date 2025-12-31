@@ -88,6 +88,40 @@ bool is_flow_ignored_key(uint16_t keycode) {
     return false;
 }
 
+uint8_t kc_to_mod(uint16_t keycode) {
+    uint8_t mod;
+    switch (keycode) {
+        case KC_LCTL:
+            mod = MOD_LCTL; // Left Control
+            break;
+        case KC_RCTL:
+            mod = MOD_RCTL; // Right Control
+            break;
+        case KC_LSFT:
+            mod = MOD_LSFT; // Left Shift
+            break;
+        case KC_RSFT:
+            mod = MOD_RSFT; // Right Shift
+            break;
+        case KC_LALT:
+            mod = MOD_LALT; // Left Alt
+            break;
+        case KC_RALT:
+            mod = MOD_RALT; // Right Alt
+            break;
+        case KC_LGUI:
+            mod = MOD_LGUI; // Left GUI (Command/Win)
+            break;
+        case KC_RGUI:
+            mod = MOD_RGUI; // Right GUI (Command/Win)
+            break;
+        default:
+            mod = 0; // No modifier
+            break;
+    }
+    return mod_config(mod);
+}
+
 #if FLOW_COUNT > 0
 bool update_flow_mods(
     uint16_t keycode,
@@ -137,7 +171,7 @@ bool update_flow_mods(
         if (flow_key_list_triggered[i]) {
             if (flow_key_list_pressed[i]) {
                 if (flow_state[i] == flow_up_unqueued) {
-                    register_code(flow_config[i][1]);
+                    register_mods(kc_to_mod(flow_config[i][1]));
                 }
                 flow_timeout_wait_timers_value[i] = timer_read();
                 flow_state[i] = flow_down_unused;
@@ -148,7 +182,7 @@ bool update_flow_mods(
                     if (!flow_pressed[i][1]) {
                         if (timer_elapsed(flow_timeout_wait_timers_value[i]) > g_flow_oneshot_wait_term) {
                             flow_state[i] = flow_up_unqueued;
-                            unregister_code(flow_config[i][1]);
+                            unregister_mods(kc_to_mod(flow_config[i][1]));
                         } else {
                             // If we didn't use the mod while trigger was held, queue it.
                             flow_state[i] = flow_up_queued;
@@ -161,7 +195,7 @@ bool update_flow_mods(
                     // If we did use the mod while trigger was held, unregister it.
                     if (!flow_pressed[i][1]) {
                         flow_state[i] = flow_up_unqueued;
-                        unregister_code(flow_config[i][1]);
+                        unregister_mods(kc_to_mod(flow_config[i][1]));
                     }
                     break;
                 default:
@@ -178,7 +212,7 @@ bool update_flow_mods(
                         break;
                     case flow_up_queued_used:
                         flow_state[i] = flow_up_unqueued;
-                        unregister_code(flow_config[i][1]);
+                        unregister_mods(kc_to_mod(flow_config[i][1]));
                         break;
                     default:
                         break;
@@ -193,11 +227,11 @@ bool update_flow_mods(
                         break;
                     case flow_up_queued:
                         flow_state[i] = flow_up_unqueued;
-                        unregister_code(flow_config[i][1]);
+                        unregister_mods(kc_to_mod(flow_config[i][1]));
                         break;
                     case flow_up_queued_used:
                         flow_state[i] = flow_up_unqueued;
-                        unregister_code(flow_config[i][1]);
+                        unregister_mods(kc_to_mod(flow_config[i][1]));
                         break;
                     default:
                         break;
@@ -341,7 +375,7 @@ void flow_matrix_scan(void) {
                 && timer_elapsed(flow_timeout_timers_value[i]) > g_flow_oneshot_term) {
             flow_timeout_timers_active[i] = false;
             flow_state[i] = flow_up_unqueued;
-            unregister_code(flow_config[i][1]);
+            unregister_mods(kc_to_mod(flow_config[i][1]));
         }
     }
 #endif
